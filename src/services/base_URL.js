@@ -1,1 +1,1 @@
-export const base_Url = "http://10.11.0.181:8002"
+export const BASE_URL = "http://192.168.1.14:8002"

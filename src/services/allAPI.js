@@ -1,13 +1,13 @@
 import { commonAPI } from "./commonAPI"
-import { base_Url } from "./base_URL"
+import { BASE_URL} from "./base_URL"
 
 
 //register user
-export const registerapi = async(user)=>{
-    return await commonAPI('POST',`${base_Url}/register/user`,"")
+export const registerAPI = async(user)=>{
+    return await commonAPI('POST',`${BASE_URL}/register`,user,"")
 }
 
 //login user
 export const loginapi = async(user)=>{
-    return await commonAPI('POST',`${base_Url}/login/user`,"")
+    return await commonAPI('POST',`${BASE_URL}/login/user`,"")
 }
