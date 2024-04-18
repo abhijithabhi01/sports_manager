@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import './authstyle.css'
-import { registerAPI } from '../../services/allAPI';
+import { loginAPI, registerAPI } from '../../services/allAPI';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
   
 
 function Auth() {
@@ -16,10 +17,17 @@ function Auth() {
     issponser:false,
     iscollege:false
   })
-  console.log(userdata);
+
+  const navigate = useNavigate()
 
   const toggleSignUp = () => {
     setSignUpMode(!signUpMode);
+    setUserdata({
+      ...userdata,
+      isuser: true,
+      iscollege: false,
+      issponser: false,
+    })
   };
 
 const [activeTab, setActiveTab] = useState(1);
@@ -64,12 +72,13 @@ const handleRegister = async (e) => {
   e.preventDefault();
   const { actual_name, username, email, password, isuser, issponser, iscollege } = userdata;
   if (!actual_name || !username || !email || !password) {
-    toast.success('please fill the Details Completely');
+    toast.info('please fill the Details Completely');
   } else {
     const result = await registerAPI(userdata);
     console.log(result.data);
     if (result.status === 200) {
       toast.success('Registration success');
+
       setUserdata({
         actual_name: "",
         username: "",
@@ -84,7 +93,30 @@ const handleRegister = async (e) => {
 
 
 
-
+const handleLogin = async (e) => {
+  e.preventDefault();
+  const { username, password } = userdata;
+  if (!username || !password) {
+    toast.info('Please fill in all the fields.');
+  } else {
+    const result = await loginAPI(userdata); // Assuming loginAPI is a function that sends login request
+    console.log(result);
+    if (result.status === 200) {
+      toast.success('Logged in');
+      sessionStorage.setItem('existingUser', JSON.stringify(result.data.existingUser));
+      sessionStorage.setItem("token", result.data.token);
+      setUserdata({
+        username: "",
+        password: ""
+      });
+   setTimeout(() => {
+    navigate('/')
+   }, 2500);
+    } else {
+      toast.success(result.response.data);
+    }
+  }
+};
 console.log(userdata);
   return (
     <>
@@ -100,7 +132,8 @@ console.log(userdata);
         <svg height="20" viewBox="0 0 32 32" width="20" xmlns="http://www.w3.org/2000/svg"><g id="Layer_3" data-name="Layer 3"><path d="m30.853 13.87a15 15 0 0 0 -29.729 4.082 15.1 15.1 0 0 0 12.876 12.918 15.6 15.6 0 0 0 2.016.13 14.85 14.85 0 0 0 7.715-2.145 1 1 0 1 0 -1.031-1.711 13.007 13.007 0 1 1 5.458-6.529 2.149 2.149 0 0 1 -4.158-.759v-10.856a1 1 0 0 0 -2 0v1.726a8 8 0 1 0 .2 10.325 4.135 4.135 0 0 0 7.83.274 15.2 15.2 0 0 0 .823-7.455zm-14.853 8.13a6 6 0 1 1 6-6 6.006 6.006 0 0 1 -6 6z"></path></g></svg>
           <input type="text" className="input" value={userdata.actual_name}onChange={(e)=>setUserdata({...userdata,actual_name:e.target.value})} placeholder="Enter your First name" />
         </div>
-     
+        </>  
+} 
       <div className="flex-column">
       <label>username </label>
       </div>
@@ -108,15 +141,18 @@ console.log(userdata);
       <svg height="20" viewBox="0 0 32 32" width="20" xmlns="http://www.w3.org/2000/svg"><g id="Layer_3" data-name="Layer 3"><path d="m30.853 13.87a15 15 0 0 0 -29.729 4.082 15.1 15.1 0 0 0 12.876 12.918 15.6 15.6 0 0 0 2.016.13 14.85 14.85 0 0 0 7.715-2.145 1 1 0 1 0 -1.031-1.711 13.007 13.007 0 1 1 5.458-6.529 2.149 2.149 0 0 1 -4.158-.759v-10.856a1 1 0 0 0 -2 0v1.726a8 8 0 1 0 .2 10.325 4.135 4.135 0 0 0 7.83.274 15.2 15.2 0 0 0 .823-7.455zm-14.853 8.13a6 6 0 1 1 6-6 6.006 6.006 0 0 1 -6 6z"></path></g></svg>
         <input type="text" className="input" value={userdata.username}onChange={(e)=>setUserdata({...userdata,username:e.target.value})} placeholder="Enter your lastname" />
       </div>   
-      </>}
-       <div className="flex-column">
+     
+     {signUpMode &&  
+     <>
+     <div className="flex-column">
         <label>Email </label>
       </div>
       <div className="inputForm">
       <svg height="20" viewBox="0 0 32 32" width="20" xmlns="http://www.w3.org/2000/svg"><g id="Layer_3" data-name="Layer 3"><path d="m30.853 13.87a15 15 0 0 0 -29.729 4.082 15.1 15.1 0 0 0 12.876 12.918 15.6 15.6 0 0 0 2.016.13 14.85 14.85 0 0 0 7.715-2.145 1 1 0 1 0 -1.031-1.711 13.007 13.007 0 1 1 5.458-6.529 2.149 2.149 0 0 1 -4.158-.759v-10.856a1 1 0 0 0 -2 0v1.726a8 8 0 1 0 .2 10.325 4.135 4.135 0 0 0 7.83.274 15.2 15.2 0 0 0 .823-7.455zm-14.853 8.13a6 6 0 1 1 6-6 6.006 6.006 0 0 1 -6 6z"></path></g></svg>
         <input type="text" className="input" value={userdata.email}onChange={(e)=>setUserdata({...userdata,email:e.target.value})} placeholder="Enter your Email" />
-      </div>    
-     
+      </div> 
+     </> }
+
       <div className="flex-column">
         <label>Password </label>
       </div>
@@ -151,13 +187,29 @@ console.log(userdata);
   
      {signUpMode?       <button className="button-submit" onClick={handleRegister}>Register</button>
 :
-            <button className="button-submit">Login</button>
+            <button onClick={handleLogin} className="button-submit">Login</button>
     }
 
 
       
     </form>
 </div>
+
+
+
+
+<ToastContainer
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+/>
     </>
   )
 }

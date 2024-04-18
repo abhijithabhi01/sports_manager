@@ -6,7 +6,7 @@ function Navbar() {
  <div className="nav">
       <input type="checkbox" id="nav-check" />
       <div className="nav-header">
-        <div className="nav-title">
+        <div className="nav-title ms-5">
           Sports Manager
         </div>
       </div>
@@ -19,8 +19,8 @@ function Navbar() {
       </div>
       
       <div className="nav-links">
-        <a href="" target="_blank" rel="noopener noreferrer">Home</a>
-        <a href="" target="_blank" rel="noopener noreferrer">About</a>
+        <a href=""  rel="noopener noreferrer">Home</a>
+        <a href=""  rel="noopener noreferrer">About</a>
         
         <a href="/auth">login</a>
      
